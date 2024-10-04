@@ -14,10 +14,18 @@ import com.intheeast.entity.QComment;
 import com.intheeast.entity.QPost;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
 
 @Repository("postDao")
+@Transactional
 public class HbnPostDao extends AbstractHbnDao<Post> 
 	implements PostDao{
+	
+	@PersistenceContext
+    private EntityManager entityManager;
 	
 	public HbnPostDao() {
 		super(Post.class);
@@ -28,15 +36,21 @@ public class HbnPostDao extends AbstractHbnDao<Post>
 		// TODO Auto-generated constructor stub
 	}
 	
+	private JPAQueryFactory queryFactory;
+
+    @PostConstruct
+    public void init() {
+        this.queryFactory = new JPAQueryFactory(entityManager);
+    }
+	
 	/**
      * Fetch join을 사용하여 Post와 관련된 Comment들을 함께 가져오는 메서드.
      */
     @SuppressWarnings("unchecked")
-    @Transactional(readOnly = true) // 트랜잭션이 필요한 부분에 트랜잭션 설정 추가
     public List<Post> findAllWithComments() {
 //        Session session = getSession(); // Hibernate 세션 가져오기
         
-        JPAQueryFactory queryFactory = new JPAQueryFactory(getSession());
+//        JPAQueryFactory queryFactory = new JPAQueryFactory(getSession());
 
         QPost post = QPost.post;
         QComment comment = QComment.comment;
@@ -50,6 +64,43 @@ public class HbnPostDao extends AbstractHbnDao<Post>
 //        );
 //
 //        return query.getResultList();
+    }
+    
+    @Override
+    public List<Post> findPostsByPage(int page, int pageSize) {
+//        Session session = getSession();
+//        Query<Post> query = session.createQuery("FROM Post", Post.class);
+//        query.setFirstResult(offset);
+//        query.setMaxResults(pageSize);
+//        return query.getResultList();
+        
+//        JPAQueryFactory queryFactory = new JPAQueryFactory(getSession());
+
+    	if (page < 1) {
+    		page = 1;
+    	}
+    	
+        QPost post = QPost.post;
+        return queryFactory
+                .selectFrom(post)
+                .orderBy(post.creationDate.desc()) // 원하는 정렬 방식 적용
+                .offset((page - 1) * pageSize) // 페이지 오프셋 계산
+                .limit(pageSize) // 한 페이지당 몇 개의 포스트를 가져올지 제한
+                .fetch();
+    }
+
+    @Override
+    public long countPosts() {
+//        Session session = getSession();
+//        Query<Long> query = session.createQuery("SELECT COUNT(p) FROM Post p", Long.class);
+//        return query.uniqueResult().intValue();
+    	
+    	QPost post = QPost.post;
+
+        return queryFactory
+                .select(post.count())
+                .from(post)
+                .fetchOne();
     }
 
 }

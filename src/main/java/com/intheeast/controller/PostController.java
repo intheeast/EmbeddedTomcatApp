@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -32,20 +34,37 @@ public class PostController {
 
     @Autowired
     private EntityCallback<Comment> commentCallbackImpl;
+    
+    // properties 파일에 적용 예상
+    private static final int PAGE_SIZE = 10; // 한 페이지에 표시할 게시글 수
 
-    // 게시글 목록 조회
+
+ // 게시글 목록 조회 (페이지네이션 추가)
     @GetMapping
-    public String listPosts(Model model) {
-        List<Post> posts = postService.findAll(postCallbackImpl);
-        
-//        // 강제 초기화를 위해 각 Post의 commentList에 접근
-//        for (Post post : posts) {
-//            post.getCommentList().size();  // Lazy 로딩을 강제로 초기화
-//        }
-        
+    public String listPosts(@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+        // 전체 게시글 개수 조회
+        long totalPosts = postService.countPosts();
+
+        // 게시글이 없을 경우 바로 반환
+        if (totalPosts == 0) {
+            model.addAttribute("posts", Collections.emptyList()); // 빈 리스트를 반환
+            model.addAttribute("currentPage", 1); // 페이지 번호를 1로 설정
+            model.addAttribute("totalPages", 0); // 총 페이지 수는 0
+            return "post/list"; // 바로 뷰를 반환
+        }
+
+        int totalPages = (int) Math.ceil((double) totalPosts / PAGE_SIZE); // 총 페이지 수 계산
+
+        // 해당 페이지의 게시글 목록 조회
+        List<Post> posts = postService.findPostsByPage(page, PAGE_SIZE);
+
         model.addAttribute("posts", posts);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+
         return "post/list";
     }
+
 
     // 게시글 상세 조회 및 댓글 표시
     @GetMapping("/{id}")

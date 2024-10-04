@@ -1,9 +1,12 @@
 package com.intheeast.service;
 
 
+import java.util.List;
+
 import com.intheeast.entity.Post;
 import com.intheeast.service.impl.PostCallbackImpl;
 
 public interface PostService extends EntityService<Post, EntityCallback<Post>> {
-
+	List<Post> findPostsByPage(int page, int pageSize); // 페이지별 게시글 조회
+    long countPosts(); // 전체 게시글 개수 조회
 }

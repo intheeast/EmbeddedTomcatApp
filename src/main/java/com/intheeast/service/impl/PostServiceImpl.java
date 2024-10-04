@@ -62,4 +62,17 @@ public class PostServiceImpl implements PostService {
     public void delete(Post post, final EntityCallback<Post> callback) {
         callback.delete(post);
     }
+    
+ // 페이지별 게시글 조회
+    @Override
+    public List<Post> findPostsByPage(int page, int pageSize) {
+        int offset = (page - 1) * pageSize;
+        return postDao.findPostsByPage(offset, pageSize); // 페이징 처리
+    }
+
+    // 전체 게시글 개수 조회
+    @Override
+    public long countPosts() {
+        return postDao.countPosts();
+    }
 }

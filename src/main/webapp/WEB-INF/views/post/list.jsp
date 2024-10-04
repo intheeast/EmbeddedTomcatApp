@@ -2,20 +2,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
     <title>Post List</title>
 </head>
 <body>
     <h1>Posts</h1>
 
+    <!-- 새 게시글 생성 버튼 -->
     <a href="${pageContext.request.contextPath}/posts/new" class="btn">Create New Post</a>
 
+    <!-- 게시글 목록 -->
     <table border="1" cellpadding="10">
         <thead>
             <tr>
                 <th>Title</th>
                 <th>Author</th>
-                <th>Comments</th> <!-- 댓글 수를 표시하는 컬럼 -->
                 <th>Actions</th>
             </tr>
         </thead>
@@ -24,19 +24,39 @@
                 <tr>
                     <td><a href="${pageContext.request.contextPath}/posts/${post.id}">${post.title}</a></td>
                     <td>${post.name}</td>
-                    <td>${post.commentList.size()}</td> <!-- 댓글 수 표시 -->
                     <td>
-                        <!-- 게시글 상세보기 링크 -->
                         <a href="${pageContext.request.contextPath}/posts/${post.id}" class="btn">View</a>
-
-                        <!-- 게시글 삭제 버튼 -->
-                        <form action="${pageContext.request.contextPath}/posts/${post.id}/delete" method="post" style="display:inline;">
-                            <button type="submit" class="btn btn-cancel" onclick="return confirm('Are you sure you want to delete this post?');">Delete</button>
-                        </form>
                     </td>
                 </tr>
             </c:forEach>
         </tbody>
     </table>
+
+    <!-- 페이지네이션 -->
+	<div class="pagination">
+	    <c:set var="totalPages" value="${totalPages < 1 ? 1 : totalPages}" /> <!-- totalPages가 1보다 작으면 1로 설정 -->
+	    <c:if test="${totalPages >= 1}">
+	        <c:if test="${currentPage > 1}">
+	            <a href="${pageContext.request.contextPath}/posts?page=${currentPage - 1}">&laquo; Previous</a>
+	        </c:if>
+	
+	        <c:forEach begin="1" end="${totalPages}" var="i">
+	            <c:choose>
+	                <c:when test="${i == currentPage}">
+	                    <span>${i}</span> <!-- 현재 페이지는 링크 없이 표시 -->
+	                </c:when>
+	                <c:otherwise>
+	                    <a href="${pageContext.request.contextPath}/posts?page=${i}">${i}</a>
+	                </c:otherwise>
+	            </c:choose>
+	        </c:forEach>
+	
+	        <c:if test="${currentPage < totalPages}">
+	            <a href="${pageContext.request.contextPath}/posts?page=${currentPage + 1}">Next &raquo;</a>
+	        </c:if>
+	    </c:if>
+	</div>
+
+
 </body>
 </html>
