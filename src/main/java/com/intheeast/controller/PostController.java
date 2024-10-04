@@ -1,6 +1,7 @@
 package com.intheeast.controller;
 
 import com.intheeast.entity.Comment;
+import com.intheeast.entity.FileEntity;
 import com.intheeast.entity.Post;
 import com.intheeast.service.CommentService;
 import com.intheeast.service.EntityCallback;
@@ -79,9 +80,12 @@ public class PostController {
             return "post/not_found";
         }
 
+        List<FileEntity> files = post.getFiles();
+
         List<Comment> comments = commentService.findAllCommentsByPost(post, commentCallbackImpl);
         model.addAttribute("post", post);
         model.addAttribute("comments", comments);
+        model.addAttribute("files", files);
         model.addAttribute("comment", new Comment()); // 새 댓글 작성 폼을 위해 빈 객체 추가
         return "post/detail";
     }

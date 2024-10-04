@@ -75,8 +75,9 @@ public class FileController {
             File destinationFile = new File(uploadDirPath + File.separator + file.getOriginalFilename());
             file.transferTo(destinationFile);
 
+            
             // 파일 정보를 데이터베이스에 저장
-            fileService.storeFile(file, post);  // 파일 저장 로직
+            fileService.storeFile(file, post, destinationFile.getAbsolutePath());  // 파일 저장 로직
             redirectAttributes.addFlashAttribute("message", "File uploaded successfully.");
         } catch (IOException e) {
             redirectAttributes.addFlashAttribute("message", "File upload failed!");
@@ -87,7 +88,7 @@ public class FileController {
     }
 
     // 파일 다운로드 처리
-    @GetMapping("/download/{fileId}")
+    @GetMapping("/{fileId}/download")
     public ResponseEntity<Resource> downloadFile(@PathVariable Long postId, @PathVariable Long fileId) {
         FileEntity file = fileService.findById(fileId);
         if (file == null || !file.getPost().getId().equals(postId)) {

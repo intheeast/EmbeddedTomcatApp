@@ -24,17 +24,13 @@ public class FileService {
     private FileDao fileDao;
 
     @Transactional
-    public void storeFile(MultipartFile file, Post post) throws IOException {
+    public void storeFile(MultipartFile file, Post post, String dir) throws IOException {
         String fileName = file.getOriginalFilename();
-
-        // 파일 저장
-//        File dest = new File(uploadPath);
-//        file.transferTo(dest);
 
         // FileEntity 저장
         FileEntity fileEntity = new FileEntity();
         fileEntity.setFileName(fileName);
-        fileEntity.setFilePath(uploadDirPath);
+        fileEntity.setFilePath(dir);
         fileEntity.setPost(post);
         fileDao.save(fileEntity);
         
