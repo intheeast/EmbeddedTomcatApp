@@ -16,6 +16,7 @@ import com.intheeast.service.EntityCallback;
 import com.intheeast.service.PostService;
 
 @Service
+@Transactional //boolean readOnly() default false;
 public class PostServiceImpl implements PostService {
     @Inject 
     private DefaultTextFilter textFilter;
@@ -33,6 +34,7 @@ public class PostServiceImpl implements PostService {
 //        return postDao.findById(id);
 //    }
 
+    
     @Override
     public void post(final Post post, final EntityCallback<Post> callback) {
         preparePost(post);
@@ -54,12 +56,13 @@ public class PostServiceImpl implements PostService {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly=true)
     @Override
     public Post findById(Long id, final EntityCallback<Post> callback) {
         return callback.findById(id);
     }
 
+    @Transactional(readOnly=true)
     @Override
     public List<Post> findAll(final EntityCallback<Post> callback) {
         return postDao.findAllWithComments();//callback.findAll();
@@ -71,6 +74,7 @@ public class PostServiceImpl implements PostService {
     }
     
     // 페이지별 게시글 조회
+    @Transactional(readOnly=true)
     @Override
     public List<Post> findPostsByPage(int page, int pageSize) {
         int offset = (page - 1) * pageSize;
@@ -78,18 +82,29 @@ public class PostServiceImpl implements PostService {
     }
 
     // 전체 게시글 개수 조회
+
+    @Transactional(readOnly=true)
     @Override
     public long countPosts() {
         return postDao.countPosts();
     }
     
+    @Transactional(readOnly=true)
     @Override
     public List<Post> searchPostsByName(String name, int page, int pageSize) {
         return postDao.searchPostsByName(name, page, pageSize);
     }
 
+    @Transactional(readOnly=true)
     @Override
     public long countPostsByName(String name) {
         return postDao.countPostsByName(name);
     }
+
+	@Override
+	public void update(Post entity, EntityCallback<Post> callback) {
+		callback.update(entity);
+	}
+    
+    
 }

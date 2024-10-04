@@ -232,5 +232,34 @@ public class PostController {
         return "post/list";
     }
 
+    @GetMapping("/{id}/edit")
+    public String showEditPostForm(@PathVariable("id") Long id, Model model) {
+        Post post = postService.findById(id, postCallbackImpl);
+        if (post == null) {
+            return "post/not_found";  // 게시글이 없을 경우 에러 페이지로 이동
+        }
+
+        model.addAttribute("post", post);  // 수정할 게시글을 모델에 추가
+        return "post/edit";  // 수정 폼을 렌더링할 JSP로 이동
+    }
+    
+    @PostMapping("/{id}/edit")
+    public String updatePost(@PathVariable("id") Long id, 
+                             @Valid @ModelAttribute("post") Post post, 
+                             BindingResult result, 
+                             HttpServletRequest request, 
+                             Model model) {
+        if (result.hasErrors()) {
+            return "post/edit";  // 에러가 발생하면 수정 폼으로 다시 이동
+        }
+
+        String clientIp = Utilities.getClientIp(request);  // 클라이언트 IP 가져오기
+        post.setIpAddress(clientIp);
+        
+        postService.update(post, postCallbackImpl);  // 게시글 업데이트
+        return "redirect:/posts/" + id;  // 수정된 게시글 페이지로 리다이렉트
+    }
+
+
  
 }

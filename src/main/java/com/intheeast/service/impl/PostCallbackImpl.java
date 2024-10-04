@@ -27,7 +27,7 @@ public class PostCallbackImpl implements EntityCallback<Post>{
 	@Transactional(readOnly = false)
 	public void post(Post post) {
 		Assert.notNull(post, "post can't be null");
-		postDao.save(post);	
+		postDao.save(post);			
 	}
 
 	@Override
@@ -38,12 +38,18 @@ public class PostCallbackImpl implements EntityCallback<Post>{
 	@Override
 	public List<Post> findAll() {
 		return postDao.findAll();
-	}
+	}	
 
 	@Transactional(readOnly = false)
 	@Override
 	public void delete(Post post) {
 		postDao.delete(post);
+	}
+
+	@Override
+	public void update(Post entity) {
+		postDao.update(entity);
+		
 	}
 
 }

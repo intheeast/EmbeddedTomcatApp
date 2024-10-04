@@ -52,4 +52,9 @@ public class CommentCallbackImpl implements EntityCallback<Comment>{
 		return commentDao.findAllCommentsByPost(post);
 	}
 
+	@Override
+	public void update(Comment entity) {
+		commentDao.update(entity);
+	}
+
 }

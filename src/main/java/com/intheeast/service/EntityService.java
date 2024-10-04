@@ -17,5 +17,7 @@ public interface EntityService<T, C> {
     
     List<T> findAll(C callback);
     
+    void update(T entity, C callback);
+    
     void delete(T entity, C callback);
 }

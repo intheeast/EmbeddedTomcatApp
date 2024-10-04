@@ -15,6 +15,7 @@ import com.intheeast.service.DefaultTextFilter;
 import com.intheeast.service.EntityCallback;
 
 @Service
+@Transactional
 public class CommentServiceImpl implements CommentService {
     @Inject private DefaultTextFilter textFilter;
     @Inject private CommentMailSender mailSender;
@@ -38,11 +39,13 @@ public class CommentServiceImpl implements CommentService {
         comment.setText(textFilter.filter(comment.getText()));
     }
 
+    @Transactional(readOnly=true)
     @Override
     public Comment findById(Long id, final EntityCallback<Comment> callback) {
         return callback.findById(id);
     }
 
+    @Transactional(readOnly=true)
     @Override
     public List<Comment> findAll(final EntityCallback<Comment> callback) {
         return callback.findAll();
@@ -53,23 +56,15 @@ public class CommentServiceImpl implements CommentService {
         callback.delete(comment);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly=true)
     @Override
     public List<Comment> findAllCommentsByPost(Post post, final EntityCallback<Comment> callback) {
     	 return commentDao.findAllCommentsByPost(post);
-//        // 구현체에서 직접 처리
-//        if (callback instanceof CommentCallbackImpl) {
-//            return ((CommentCallbackImpl) callback).findAllCommentsByPost(post);
-//        } else {
-//            throw new UnsupportedOperationException("This operation is not supported for the provided callback.");
-//        }
     }
 
-//	@Override
-//	public List<Comment> findAllCommentsByPost(Post post, CommentCallbackImpl callback) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-    
-    
+	@Override
+	public void update(Comment entity, EntityCallback<Comment> callback) {
+		callback.update(entity);		
+	}
+
 }

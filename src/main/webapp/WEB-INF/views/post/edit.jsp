@@ -3,36 +3,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
     <title>Edit Post</title>
 </head>
 <body>
     <h1>Edit Post</h1>
 
-    <form:form method="post" action="${pageContext.request.contextPath}/posts/${post.id}/edit" modelAttribute="post">
-        <label for="name">Name:</label>
-        <form:input path="name" />
-        <br />
-
-        <label for="email">Email:</label>
-        <form:input path="email" />
-        <br />
-
-        <label for="web">Website:</label>
-        <form:input path="web" />
-        <br />
-
+    <form:form method="post" modelAttribute="post" action="${pageContext.request.contextPath}/posts/${post.id}/edit">
         <label for="title">Title:</label>
         <form:input path="title" />
-        <br />
-
-        <label for="text">Text:</label>
-        <form:textarea path="text" />
-        <br />
-
-        <button type="submit">Update</button>
+        <br/>
+        <label for="name">Author Name:</label>
+        <form:input path="name" />
+        <br/>
+        <label for="email">Email:</label>
+        <form:input path="email" />
+        <br/>
+        <label for="web">Website:</label>
+        <form:input path="web" />
+        <br/>
+        <label for="text">Content:</label>
+        <form:textarea path="text"></form:textarea>
+        <br/>
+        <button type="submit">Save</button>
     </form:form>
 
-    <a href="${pageContext.request.contextPath}/posts">Cancel</a>
+    <a href="${pageContext.request.contextPath}/posts">Back to Posts</a>
 </body>
 </html>
