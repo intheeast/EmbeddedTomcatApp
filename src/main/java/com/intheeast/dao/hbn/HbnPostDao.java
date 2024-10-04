@@ -12,6 +12,7 @@ import com.intheeast.dao.PostDao;
 import com.intheeast.entity.Post;
 import com.intheeast.entity.QComment;
 import com.intheeast.entity.QPost;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import jakarta.annotation.PostConstruct;
@@ -101,6 +102,56 @@ public class HbnPostDao extends AbstractHbnDao<Post>
                 .select(post.count())
                 .from(post)
                 .fetchOne();
+    }
+    
+    // 검색 쿼리 추가
+//    @Override
+//    public List<Post> searchPostsByName(String name, int page, int pageSize) {
+//        QPost post = QPost.post;
+//        JPAQuery<Post> query = new JPAQuery<>(getSession());
+//        
+//        query.from(post)
+//             .where(post.name.containsIgnoreCase(name))
+//             .offset((page - 1) * pageSize)
+//             .limit(pageSize);
+//
+//        return query.fetch();
+//    }
+//
+//    @Override
+//    public long countPostsByName(String name) {
+//        QPost post = QPost.post;
+//        JPAQuery<Long> query = new JPAQuery<>(getSession());
+//
+//        return query.select(post.count())
+//                    .from(post)
+//                    .where(post.name.containsIgnoreCase(name))
+//                    .fetchOne();
+//    }
+    
+//    @SuppressWarnings("unchecked")
+    public List<Post> searchPostsByName(String search, int page, int pageSize) {
+    	QPost post = QPost.post;
+    	
+        JPAQueryFactory queryFactory = new JPAQueryFactory(getSession());
+
+        return queryFactory
+                .selectFrom(post)
+                .where(post.name.containsIgnoreCase(search)) // 검색어가 포함된 name
+                .offset((page - 1) * pageSize) // 페이지네이션: 시작 위치 설정
+                .limit(pageSize) // 페이지 크기
+                .fetch(); // 결과 리스트 반환
+    }
+    
+    @SuppressWarnings("deprecation")
+	public long countPostsByName(String search) {
+    	QPost post = QPost.post;
+        JPAQueryFactory queryFactory = new JPAQueryFactory(getSession());
+
+        return queryFactory
+                .selectFrom(post)
+                .where(post.name.containsIgnoreCase(search)) // 검색어가 포함된 name
+                .fetchCount(); // 개수 반환
     }
 
 }

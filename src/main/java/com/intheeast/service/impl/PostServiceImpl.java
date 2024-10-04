@@ -63,7 +63,7 @@ public class PostServiceImpl implements PostService {
         callback.delete(post);
     }
     
- // 페이지별 게시글 조회
+    // 페이지별 게시글 조회
     @Override
     public List<Post> findPostsByPage(int page, int pageSize) {
         int offset = (page - 1) * pageSize;
@@ -74,5 +74,15 @@ public class PostServiceImpl implements PostService {
     @Override
     public long countPosts() {
         return postDao.countPosts();
+    }
+    
+    @Override
+    public List<Post> searchPostsByName(String name, int page, int pageSize) {
+        return postDao.searchPostsByName(name, page, pageSize);
+    }
+
+    @Override
+    public long countPostsByName(String name) {
+        return postDao.countPostsByName(name);
     }
 }

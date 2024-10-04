@@ -39,28 +39,33 @@ public class PostController {
     private static final int PAGE_SIZE = 10; // 한 페이지에 표시할 게시글 수
 
 
- // 게시글 목록 조회 (페이지네이션 추가)
+    // 게시글 목록 및 검색 기능 추가
     @GetMapping
-    public String listPosts(@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
-        // 전체 게시글 개수 조회
-        long totalPosts = postService.countPosts();
+    public String listPosts(
+            @RequestParam(value = "page", defaultValue = "1") int page, 
+            @RequestParam(value = "search", required = false) String search, 
+            Model model) {
 
-        // 게시글이 없을 경우 바로 반환
-        if (totalPosts == 0) {
-            model.addAttribute("posts", Collections.emptyList()); // 빈 리스트를 반환
-            model.addAttribute("currentPage", 1); // 페이지 번호를 1로 설정
-            model.addAttribute("totalPages", 0); // 총 페이지 수는 0
-            return "post/list"; // 바로 뷰를 반환
+        // 검색 여부에 따라 처리
+        if (search != null && !search.isEmpty()) {
+            List<Post> posts = postService.searchPostsByName(search, page, PAGE_SIZE);
+            long totalPosts = postService.countPostsByName(search);
+            int totalPages = (int) Math.ceil((double) totalPosts / PAGE_SIZE);
+            
+            model.addAttribute("posts", posts);
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", totalPages);
+            model.addAttribute("search", search); // 검색어 전달
+        } else {
+            // 기존 게시글 목록 조회
+            long totalPosts = postService.countPosts();
+            int totalPages = (int) Math.ceil((double) totalPosts / PAGE_SIZE);
+            List<Post> posts = postService.findPostsByPage(page, PAGE_SIZE);
+
+            model.addAttribute("posts", posts);
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", totalPages);
         }
-
-        int totalPages = (int) Math.ceil((double) totalPosts / PAGE_SIZE); // 총 페이지 수 계산
-
-        // 해당 페이지의 게시글 목록 조회
-        List<Post> posts = postService.findPostsByPage(page, PAGE_SIZE);
-
-        model.addAttribute("posts", posts);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", totalPages);
 
         return "post/list";
     }
@@ -203,4 +208,25 @@ public class PostController {
 
         return "redirect:/posts/" + postId;
     }
+    
+    @GetMapping("/search")
+    public String searchPosts(@RequestParam("search") String search, 
+                              @RequestParam(value = "page", defaultValue = "1") int page, 
+                              Model model) {
+    	// UTF-8로 인코딩된 검색어가 잘 들어오는지 확인
+        System.out.println("Search term: " + search);
+
+        long totalPosts = postService.countPostsByName(search);
+        int totalPages = (int) Math.ceil((double) totalPosts / PAGE_SIZE);
+
+        List<Post> posts = postService.searchPostsByName(search, page, PAGE_SIZE);
+
+        model.addAttribute("posts", posts);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("search", search);
+        return "post/list";
+    }
+
+ 
 }
