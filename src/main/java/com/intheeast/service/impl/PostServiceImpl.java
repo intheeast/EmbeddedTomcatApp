@@ -26,6 +26,11 @@ public class PostServiceImpl implements PostService {
     public DefaultTextFilter getTextFilter() { return textFilter; }
 
     public void setTextFilter(DefaultTextFilter filter) { this.textFilter = filter; }
+    
+//    @Override
+//    public Post findById(Long id) {
+//        return postDao.findById(id);
+//    }
 
     @Override
     public void post(final Post post, final EntityCallback<Post> callback) {

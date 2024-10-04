@@ -55,6 +55,10 @@ public class Post extends BaseEntity{
     @JsonManagedReference
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
+    
+    @JsonManagedReference
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FileEntity> files = new ArrayList<>();
 
         
     public void addComment(Comment comment) {
@@ -65,6 +69,16 @@ public class Post extends BaseEntity{
     public void removeComment(Comment comment) {
         comment.setPost(null);
         commentList.remove(comment);
+    }
+    
+    public void addFile(FileEntity file) {
+        files.add(file);
+        file.setPost(this);
+    }
+
+    public void removeFile(FileEntity file) {
+        files.remove(file);
+        file.setPost(null);
     }
 
 }

@@ -2,16 +2,22 @@ package com.intheeast.init;
 
 
 import jakarta.servlet.FilterRegistration;
+import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRegistration;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.servlet.DispatcherServlet;
 import com.opensymphony.sitemesh.webapp.SiteMeshFilter;
 import com.intheeast.config.AppConfig;
+
 
 public class MyWebApplicationInitializer implements WebApplicationInitializer {
 
@@ -50,5 +56,19 @@ public class MyWebApplicationInitializer implements WebApplicationInitializer {
         ServletRegistration.Dynamic registration = servletContext.addServlet("app", dispatcherServlet);
         registration.setLoadOnStartup(1);
         registration.addMapping("/");  // 정적 파일 처리를 고려한 수정
+        
+        
+        // 7. MultipartConfigElement 설정 추가 (파일 업로드 관련)
+        MultipartConfigElement multipartConfigElement = new MultipartConfigElement(
+        		System.getProperty("java.io.tmpdir"),  // OS에 맞는 임시 디렉토리
+        		// Windows OS -> C:\Users\<username>\AppData\Local\Temp
+                20971520,  // 최대 파일 크기: 20MB
+                41943040,  // 전체 요청 크기: 40MB
+                5242880);  // 임계값: 5MB
+
+        registration.setMultipartConfig(multipartConfigElement);
     }
+    
+
+
 }
