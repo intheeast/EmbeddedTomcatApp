@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -35,6 +36,9 @@ import com.intheeast.service.PostService;
 @Controller
 @RequestMapping("/posts/{postId}/files")
 public class FileController {
+	
+	@Value("${file.upload.dir}")
+    private String uploadDirPath;
 
     @Autowired
     private EntityCallback<Post> postCallbackImpl;
@@ -67,8 +71,8 @@ public class FileController {
 
         try {
             // 서버에 파일을 저장할 경로 지정
-            String uploadDir = System.getProperty("java.io.tmpdir"); // 운영 중에는 실제 경로로 설정 필요
-            File destinationFile = new File(uploadDir + File.separator + file.getOriginalFilename());
+//            String uploadDir = System.getProperty("java.io.tmpdir"); // 운영 중에는 실제 경로로 설정 필요
+            File destinationFile = new File(uploadDirPath + File.separator + file.getOriginalFilename());
             file.transferTo(destinationFile);
 
             // 파일 정보를 데이터베이스에 저장

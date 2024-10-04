@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.intheeast.dao.PostDao;
@@ -53,6 +54,7 @@ public class PostServiceImpl implements PostService {
         }
     }
 
+    @Transactional
     @Override
     public Post findById(Long id, final EntityCallback<Post> callback) {
         return callback.findById(id);

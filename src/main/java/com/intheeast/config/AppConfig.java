@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -35,6 +36,7 @@ import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 @EnableWebMvc
 @EnableTransactionManagement
 @ComponentScan(basePackages = "com.intheeast")
+@PropertySource("classpath:application.properties")
 public class AppConfig implements WebMvcConfigurer {
 	
 	@Bean

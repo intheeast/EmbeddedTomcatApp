@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.intheeast.dao.FileDao;
@@ -15,25 +17,28 @@ import com.intheeast.entity.Post;
 @Service
 public class FileService {
 
-    private static final String UPLOAD_DIR = "uploads/";
-
+	@Value("${file.upload.dir}")
+    private String uploadDirPath;
+	
     @Autowired
     private FileDao fileDao;
 
+    @Transactional
     public void storeFile(MultipartFile file, Post post) throws IOException {
         String fileName = file.getOriginalFilename();
-        String uploadPath = UPLOAD_DIR + fileName;
 
         // 파일 저장
-        File dest = new File(uploadPath);
-        file.transferTo(dest);
+//        File dest = new File(uploadPath);
+//        file.transferTo(dest);
 
         // FileEntity 저장
         FileEntity fileEntity = new FileEntity();
         fileEntity.setFileName(fileName);
-        fileEntity.setFilePath(uploadPath);
+        fileEntity.setFilePath(uploadDirPath);
         fileEntity.setPost(post);
         fileDao.save(fileEntity);
+        
+        post.addFile(fileEntity);        
     }
 
     public FileEntity findById(Long fileId) {
