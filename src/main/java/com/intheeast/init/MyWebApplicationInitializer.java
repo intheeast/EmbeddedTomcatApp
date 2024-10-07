@@ -1,5 +1,7 @@
 package com.intheeast.init;
 
+import com.intheeast.filter.LoggingFilter;
+import com.intheeast.filter.SimpleCORSFilter;
 import jakarta.servlet.FilterRegistration;
 import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.ServletContext;
@@ -12,26 +14,25 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.DispatcherServlet;
 import com.opensymphony.sitemesh.webapp.SiteMeshFilter;
 import com.intheeast.config.AppConfig;
+import com.intheeast.config.WebConfig;
 
 public class MyWebApplicationInitializer implements WebApplicationInitializer {
 
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
-        // Spring 애플리케이션 컨텍스트 설정
+        // 1. Root 애플리케이션 컨텍스트 설정 (AppConfig)
         AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
-        rootContext.register(AppConfig.class);
+        rootContext.register(AppConfig.class);  // 전역 빈 설정
 
-        // 리스너 추가 (ContextLoaderListener)
+        // 2. ContextLoaderListener 추가 (Root Context 관리)
         servletContext.addListener(new ContextLoaderListener(rootContext));
 
-        // 전역 파라미터 설정
+        // 3. 전역 파라미터 및 필터 설정
         addGlobalParameters(servletContext);
+        addFilters(servletContext);  // 필터 설정
 
-        // 필터 설정
-        addFilters(servletContext);
-
-        // 서블릿 설정 (DispatcherServlet)
-        addDispatcherServlet(servletContext);
+        // 4. DispatcherServlet 서블릿 컨텍스트 설정 (WebConfig) 및 parent-child 설정
+        addDispatcherServlet(servletContext, rootContext);
     }
 
     // 전역 파라미터 설정 메서드
@@ -42,7 +43,7 @@ public class MyWebApplicationInitializer implements WebApplicationInitializer {
                 "<p>Recipe 8.1 shows how to create a simple user feedback form.</p>");
     }
 
-    // 필터 추가 메서드
+    // 필터 추가 메서드 (필터 추가)
     private void addFilters(ServletContext servletContext) {
         // SiteMesh 필터 설정
         FilterRegistration.Dynamic siteMeshFilter = servletContext.addFilter("sitemesh", new SiteMeshFilter());
@@ -54,12 +55,24 @@ public class MyWebApplicationInitializer implements WebApplicationInitializer {
         characterEncodingFilter.setForceEncoding(true);
         FilterRegistration.Dynamic encodingFilter = servletContext.addFilter("encodingFilter", characterEncodingFilter);
         encodingFilter.addMappingForUrlPatterns(null, false, "/*");
+
+        // LoggingFilter 등록
+        FilterRegistration.Dynamic loggingFilter = servletContext.addFilter("loggingFilter", new LoggingFilter());
+        loggingFilter.addMappingForUrlPatterns(null, false, "/*");
+
+        // SimpleCORSFilter 등록
+        FilterRegistration.Dynamic corsFilter = servletContext.addFilter("corsFilter", new SimpleCORSFilter());
+        corsFilter.addMappingForUrlPatterns(null, false, "/*");
     }
 
-    // DispatcherServlet 설정 메서드
-    private void addDispatcherServlet(ServletContext servletContext) {
+    // DispatcherServlet 설정 (Web 전용 컨텍스트) + parent-child 구조 설정
+    private void addDispatcherServlet(ServletContext servletContext, AnnotationConfigWebApplicationContext rootContext) {
+        // Web 전용 애플리케이션 컨텍스트 (컨트롤러, 뷰 리졸버 등)
         AnnotationConfigWebApplicationContext servletContextConfig = new AnnotationConfigWebApplicationContext();
-        servletContextConfig.register(AppConfig.class);
+        servletContextConfig.register(WebConfig.class);  // Web 관련 빈 설정
+
+        // 부모 컨텍스트 설정
+        servletContextConfig.setParent(rootContext);  // parent-child 계층 구조 설정
 
         DispatcherServlet dispatcherServlet = new DispatcherServlet(servletContextConfig);
         ServletRegistration.Dynamic registration = servletContext.addServlet("app", dispatcherServlet);

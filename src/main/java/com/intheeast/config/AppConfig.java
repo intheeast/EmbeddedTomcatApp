@@ -33,11 +33,10 @@ import jakarta.servlet.MultipartConfigElement;
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 
 @Configuration
-@EnableWebMvc
 @EnableTransactionManagement
-@ComponentScan(basePackages = "com.intheeast")
+@ComponentScan(basePackages = {"com.intheeast.service", "com.intheeast.dao"})
 @PropertySource("classpath:application.properties")
-public class AppConfig implements WebMvcConfigurer {
+public class AppConfig{
 	
 	@Bean
     public DataSource dataSource() {
@@ -78,17 +77,7 @@ public class AppConfig implements WebMvcConfigurer {
         properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
 
         return properties;
-    }
-    
-    // ViewResolver 설정
-    @Bean
-    public InternalResourceViewResolver viewResolver() {
-        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-//        resolver.setViewClass(JstlView.class);  // JSTL 뷰 클래스 설정
-        resolver.setPrefix("/WEB-INF/views/");    // JSP 파일 경로 설정
-        resolver.setSuffix(".jsp");             // JSP 파일 확장자 설정
-        return resolver;
-    }
+    }    
 
     // 메시지 소스 설정
     @Bean
@@ -99,16 +88,7 @@ public class AppConfig implements WebMvcConfigurer {
     }
 
     // View Controller 설정 (예: URL 경로와 뷰 매핑)
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("extras/home");  // 빈 경로 매핑
-    }
-
-    // 추가적인 설정: Default Servlet Handler
-    @Override
-    public void configureDefaultServletHandling(org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer configurer) {
-        configurer.enable();  // 기본 서블릿 핸들링 활성화
-    }
+    
     
     @Bean
     public Class<UserMessage> userMessageClass() {
@@ -148,12 +128,5 @@ public class AppConfig implements WebMvcConfigurer {
         message.setText("냉무");       // 기본 내용 설정
         return message;
     }
-    
-    
-    @Bean
-    public StandardServletMultipartResolver multipartResolver() {
-        return new StandardServletMultipartResolver();
-    }
-    
     
 }
