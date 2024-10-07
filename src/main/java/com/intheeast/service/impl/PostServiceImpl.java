@@ -101,6 +101,7 @@ public class PostServiceImpl implements PostService {
         return postDao.countPostsByName(name);
     }
 
+    
 	@Override
 	public void update(Post entity, EntityCallback<Post> callback) {
 		callback.update(entity);

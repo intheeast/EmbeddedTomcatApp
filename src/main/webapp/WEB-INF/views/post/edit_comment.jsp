@@ -2,27 +2,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
     <title>Edit Comment</title>
 </head>
 <body>
     <h1>Edit Comment</h1>
-    <form:form method="post" action="${pageContext.request.contextPath}/posts/${post.id}/comments/${comment.id}/edit" modelAttribute="comment">
+    <form:form method="post" modelAttribute="comment" action="${pageContext.request.contextPath}/posts/${post.id}/comments/${comment.id}/edit">
         <label for="name">Name:</label>
         <form:input path="name" />
-        <br />
-
+        <br/>
+        
         <label for="email">Email:</label>
         <form:input path="email" />
-        <br />
-
+        <br/>
+        
         <label for="text">Comment:</label>
         <form:textarea path="text" />
-        <br />
-
+        <br/>
+        
         <button type="submit">Update Comment</button>
     </form:form>
-
-    <a href="${pageContext.request.contextPath}/posts/${post.id}">Back to Post</a>
+    
+    <a href="${pageContext.request.contextPath}/posts/${post.id}">Cancel</a>
 </body>
 </html>

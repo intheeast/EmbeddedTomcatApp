@@ -26,9 +26,10 @@ public abstract class AbstractHbnDao<T> {
     @Transactional
     public void save(T entity) {
         getSession().saveOrUpdate(entity);
+//        getSession().persist(entity);
     }
 
-    @Transactional
+//    @Transactional
     public void update(T entity) {
         getSession().update(entity);
     }

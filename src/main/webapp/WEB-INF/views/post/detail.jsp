@@ -16,23 +16,26 @@
 	<a href="${pageContext.request.contextPath}/posts/${post.id}/edit" class="btn">Edit Post</a>
 
     <!-- 댓글 목록 -->
-    <h2>Comments</h2>
-    <c:if test="${!empty comments}">
-        <ul>
-            <c:forEach var="comment" items="${comments}">
-                <li>
-                    <strong>${comment.name} (${comment.email})</strong>: ${comment.text}
-                    <!-- 댓글 삭제 버튼 -->
-                    <form action="${pageContext.request.contextPath}/posts/${post.id}/comments/${comment.id}/delete" method="post" style="display:inline;">
-                        <button type="submit" onclick="return confirm('Are you sure you want to delete this comment?');">Delete</button>
-                    </form>
-                </li>
-            </c:forEach>
-        </ul>
-    </c:if>
-    <c:if test="${empty comments}">
-        <p>No comments yet.</p>
-    </c:if>
+	<h2>Comments</h2>
+	<c:if test="${!empty comments}">
+	    <ul>
+	        <c:forEach var="comment" items="${comments}">
+	            <li>
+	                <strong>${comment.name} (${comment.email})</strong>: ${comment.text}
+	                <form method="get" action="${pageContext.request.contextPath}/posts/${post.id}/comments/${comment.id}/edit" style="display:inline;">
+	                    <button type="submit">Edit</button>
+	                </form>
+	                <form method="post" action="${pageContext.request.contextPath}/posts/${post.id}/comments/${comment.id}/delete" style="display:inline;">
+	                    <button type="submit" onclick="return confirm('Are you sure you want to delete this comment?');">Delete</button>
+	                </form>
+	            </li>
+	        </c:forEach>
+	    </ul>
+	</c:if>
+	<c:if test="${empty comments}">
+	    <p>No comments yet.</p>
+	</c:if>
+
 
     <!-- 댓글 추가 폼 -->
 	<h2>Add a Comment</h2>

@@ -192,7 +192,7 @@ public class PostController {
         existingComment.setEmail(comment.getEmail());
         existingComment.setText(comment.getText());
 
-        commentService.post(existingComment, commentCallbackImpl);
+        commentService.update(existingComment, commentCallbackImpl);
         return "redirect:/posts/" + postId;
     }
 
@@ -260,6 +260,6 @@ public class PostController {
         return "redirect:/posts/" + id;  // 수정된 게시글 페이지로 리다이렉트
     }
 
-
+    
  
 }

@@ -46,6 +46,7 @@ public class PostCallbackImpl implements EntityCallback<Post>{
 		postDao.delete(post);
 	}
 
+	@Transactional(readOnly = false)
 	@Override
 	public void update(Post entity) {
 		postDao.update(entity);
