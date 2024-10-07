@@ -1,7 +1,5 @@
 package com.intheeast.filter;
 
-import org.springframework.stereotype.Component;
-
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -13,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-@Component
 public class LoggingFilter implements Filter {
 
     private final Logger logger = Logger.getLogger(LoggingFilter.class.getName());

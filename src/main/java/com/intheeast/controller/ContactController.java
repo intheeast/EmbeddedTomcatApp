@@ -41,6 +41,17 @@ public class ContactController {
 	}
 	
 	/**
+	 * Handle GET requests for /contact by redirecting to the contact form.
+	 * 
+	 * @return logical view name
+	 */
+	@RequestMapping(value = "", method = RequestMethod.GET)
+	public String getContactRedirect() {
+	    return "redirect:/contact/new";
+	}
+
+	
+	/**
 	 * @param req request
 	 * @param model model
 	 */

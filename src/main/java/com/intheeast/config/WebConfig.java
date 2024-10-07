@@ -30,6 +30,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("extras/home");  // 빈 경로 매핑
+        registry.addViewController("/about").setViewName("extras/about");  // "/about" 경로 매핑
     }
 
     // 추가적인 설정: Default Servlet Handler

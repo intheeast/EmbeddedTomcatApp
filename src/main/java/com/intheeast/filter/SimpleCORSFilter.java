@@ -1,6 +1,5 @@
 package com.intheeast.filter;
 
-import org.springframework.stereotype.Component;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -13,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@Component
 public class SimpleCORSFilter implements Filter {
 
     @Override
