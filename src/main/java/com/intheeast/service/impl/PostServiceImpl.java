@@ -82,7 +82,6 @@ public class PostServiceImpl implements PostService {
     }
 
     // 전체 게시글 개수 조회
-
     @Transactional(readOnly=true)
     @Override
     public long countPosts() {

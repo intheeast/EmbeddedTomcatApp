@@ -23,28 +23,23 @@ public abstract class AbstractHbnDao<T> {
         return sessionFactory.getCurrentSession();
     }
 
-    @Transactional
     public void save(T entity) {
         getSession().saveOrUpdate(entity);
 //        getSession().persist(entity);
     }
 
-//    @Transactional
     public void update(T entity) {
-        getSession().update(entity);
+        getSession().saveOrUpdate(entity);
     }
 
-    @Transactional
     public void delete(T entity) {
         getSession().delete(entity);
     }
 
-    @Transactional(readOnly = true)
     public T findById(Long id) {
         return getSession().get(entityClass, id);
     }
 
-    @Transactional(readOnly = true)
     public List<T> findAll() {
         return getSession()
                 .createQuery("from " + entityClass.getName(), entityClass)

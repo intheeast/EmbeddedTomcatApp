@@ -16,16 +16,16 @@ import com.intheeast.entity.Post;
 import com.intheeast.service.EntityCallback;
 
 @Service
-@Transactional(
-	propagation = Propagation.REQUIRED,
-	isolation = Isolation.DEFAULT,
-	readOnly = true)
+//@Transactional(
+//	propagation = Propagation.REQUIRED,
+//	isolation = Isolation.DEFAULT,
+//	readOnly = true)
 public class CommentCallbackImpl implements EntityCallback<Comment>{
 
 	// 아래 코드가 문제인 것 같음.
 	@Inject private CommentDao commentDao;
 	
-	@Transactional(readOnly = false)
+//	@Transactional(readOnly = false)
 	public void post(Comment comment) {
 		Assert.notNull(comment, "comment can't be null");
 		commentDao.save(comment);	
@@ -41,7 +41,7 @@ public class CommentCallbackImpl implements EntityCallback<Comment>{
 		return commentDao.findAll();
 	}
 
-	@Transactional(readOnly = false)
+//	@Transactional(readOnly = false)
 	@Override
 	public void delete(Comment comment) {
 		commentDao.delete(comment);

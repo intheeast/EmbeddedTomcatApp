@@ -175,7 +175,7 @@ public class PostController {
                                 @Valid @ModelAttribute("comment") Comment comment,
                                 BindingResult result, Model model) {
         if (result.hasErrors()) {
-            return "post/edit_comment";
+            return "post/edit_comment";  // 에러가 발생하면 수정 폼으로 다시 이동
         }
 
         Post post = postService.findById(postId, postCallbackImpl);
@@ -188,13 +188,22 @@ public class PostController {
             return "post/not_found";
         }
 
-        existingComment.setName(comment.getName());
-        existingComment.setEmail(comment.getEmail());
-        existingComment.setText(comment.getText());
+        // 변경된 필드만 업데이트
+        if (!existingComment.getName().equals(comment.getName())) {
+            existingComment.setName(comment.getName());
+        }
+        if (!existingComment.getEmail().equals(comment.getEmail())) {
+            existingComment.setEmail(comment.getEmail());
+        }
+        if (!existingComment.getText().equals(comment.getText())) {
+            existingComment.setText(comment.getText());
+        }
 
+        // 코멘트 업데이트
         commentService.update(existingComment, commentCallbackImpl);
-        return "redirect:/posts/" + postId;
+        return "redirect:/posts/" + postId;  // 수정된 게시글 페이지로 리다이렉트
     }
+
 
     // 댓글 삭제
     @PostMapping("/{postId}/comments/{commentId}/delete")
@@ -254,9 +263,32 @@ public class PostController {
         }
 
         String clientIp = Utilities.getClientIp(request);  // 클라이언트 IP 가져오기
-        post.setIpAddress(clientIp);
-        
-        postService.update(post, postCallbackImpl);  // 게시글 업데이트
+
+        Post existingPost = postService.findById(post.getId(), postCallbackImpl);
+        if (existingPost == null) {
+            return "post/not_found";
+        }
+
+        // 변경된 값만 설정
+        if (!existingPost.getName().equals(post.getName())) {
+            existingPost.setName(post.getName());
+        }
+        if (!existingPost.getTitle().equals(post.getTitle())) {
+            existingPost.setTitle(post.getTitle());
+        }
+        if (!existingPost.getWeb().equals(post.getWeb())) {
+            existingPost.setWeb(post.getWeb());
+        }
+        if (!existingPost.getText().equals(post.getText())) {
+            existingPost.setText(post.getText());
+        }
+        if (!existingPost.getIpAddress().equals(clientIp)) {
+            existingPost.setIpAddress(clientIp);
+        }
+
+        // 게시글 업데이트
+        postService.update(existingPost, postCallbackImpl);
+
         return "redirect:/posts/" + id;  // 수정된 게시글 페이지로 리다이렉트
     }
 

@@ -21,7 +21,6 @@ import jakarta.persistence.PersistenceContext;
 
 
 @Repository("postDao")
-//@Transactional
 public class HbnPostDao extends AbstractHbnDao<Post> 
 	implements PostDao{
 	

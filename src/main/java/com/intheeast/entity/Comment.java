@@ -20,7 +20,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicInsert
-@DynamicUpdate
+//@DynamicUpdate
 @Entity
 @Table(name = "comments")
 public class Comment extends BaseEntity 

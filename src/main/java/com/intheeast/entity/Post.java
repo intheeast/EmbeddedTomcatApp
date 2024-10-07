@@ -20,7 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicInsert
-@DynamicUpdate
+//@DynamicUpdate
 @Entity
 public class Post extends BaseEntity{
 

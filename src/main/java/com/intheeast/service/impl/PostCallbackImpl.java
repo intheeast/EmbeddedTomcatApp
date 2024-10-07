@@ -16,15 +16,15 @@ import com.intheeast.service.EntityCallback;
 
 
 @Service
-@Transactional(
-	propagation = Propagation.REQUIRED,
-	isolation = Isolation.DEFAULT,
-	readOnly = true)
+//@Transactional(
+//	propagation = Propagation.REQUIRED,
+//	isolation = Isolation.DEFAULT,
+//	readOnly = true)
 public class PostCallbackImpl implements EntityCallback<Post>{
 
 	@Inject private PostDao postDao;
 	
-	@Transactional(readOnly = false)
+//	@Transactional(readOnly = false)
 	public void post(Post post) {
 		Assert.notNull(post, "post can't be null");
 		postDao.save(post);			
@@ -40,13 +40,13 @@ public class PostCallbackImpl implements EntityCallback<Post>{
 		return postDao.findAll();
 	}	
 
-	@Transactional(readOnly = false)
+//	@Transactional(readOnly = false)
 	@Override
 	public void delete(Post post) {
 		postDao.delete(post);
 	}
 
-	@Transactional(readOnly = false)
+//	@Transactional(readOnly = false)
 	@Override
 	public void update(Post entity) {
 		postDao.update(entity);
